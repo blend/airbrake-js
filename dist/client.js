@@ -1499,10 +1499,12 @@ var Historian = /** @class */ (function () {
         catch (_a) { }
         if (typeof p === 'object' && typeof p.on === 'function') {
             p.on('uncaughtException', function (err) {
-                _this.notify(err);
-                if (p.listeners('uncaughtException').length === 1) {
-                    throw err;
-                }
+                // TODO improve polyfill and use .finally over .then
+                _this.notify(err).then(function () {
+                    if (p.listeners('uncaughtException').length === 1) {
+                        throw err;
+                    }
+                });
             });
             p.on('unhandledRejection', function (reason, _p) {
                 _this.notify(reason);
@@ -1531,19 +1533,20 @@ var Historian = /** @class */ (function () {
     };
     Historian.prototype.notify = function (err) {
         if (this.notifiers.length > 0) {
-            this.notifyNotifiers(err);
-            return;
+            return this.notifyNotifiers(err);
         }
         this.errors.push(err);
         if (this.errors.length > this.historyMaxLen) {
             this.errors = this.errors.slice(-this.historyMaxLen);
         }
+        // TODO improve polyfill and use polyfill
+        return Promise.resolve();
     };
     Historian.prototype.notifyNotifiers = function (err) {
-        for (var _i = 0, _a = this.notifiers; _i < _a.length; _i++) {
-            var notifier = _a[_i];
-            notifier.notify(err);
-        }
+        // TODO improve polyfill and use polyfill
+        return Promise.all(this.notifiers.map(function (notifier) {
+            return notifier.notify(err);
+        }));
     };
     Historian.prototype.onerror = function (message, filename, line, column, err) {
         if (this.ignoreWindowError > 0) {
