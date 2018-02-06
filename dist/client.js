@@ -543,6 +543,12 @@ var Client = /** @class */ (function () {
         }
         this.errors = [];
     };
+    Client.ignoreUncaughtExceptions = function () {
+        historian_1.historian.ignoreUncaughtExceptions();
+    };
+    Client.ignoreUnhandledRejections = function () {
+        historian_1.historian.ignoreUnhandledRejections();
+    };
     return Client;
 }());
 module.exports = Client;
@@ -1523,6 +1529,28 @@ var Historian = /** @class */ (function () {
             this.location();
         }
     }
+    Historian.prototype.ignoreUncaughtExceptions = function () {
+        var p;
+        try {
+            // Use eval to hide process usage from Webpack and Browserify.
+            p = eval('process');
+        }
+        catch (_a) { }
+        if (typeof p === 'object' && typeof p.on === 'function') {
+            p.removeListener('uncaughtException', this.uncaughtExceptionHandler);
+        }
+    };
+    Historian.prototype.ignoreUnhandledRejections = function () {
+        var p;
+        try {
+            // Use eval to hide process usage from Webpack and Browserify.
+            p = eval('process');
+        }
+        catch (_a) { }
+        if (typeof p === 'object' && typeof p.on === 'function') {
+            p.removeListener('unhandledRejection', this.unhandledRejectionHandler);
+        }
+    };
     Historian.prototype.registerNotifier = function (n) {
         this.notifiers.push(n);
         for (var _i = 0, _a = this.errors; _i < _a.length; _i++) {

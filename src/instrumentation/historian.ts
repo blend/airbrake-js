@@ -19,6 +19,8 @@ export default class Historian {
     private lastState: any;
     private lastLocation: string | null;
     private ignoreNextXHR = 0;
+    private uncaughtExceptionHandler: (err: any) => void;
+    private unhandledRejectionHandler: (reason: Error, _p: any) => void;
 
     constructor() {
         if (typeof window === 'object') {
@@ -64,6 +66,28 @@ export default class Historian {
         }
         if (typeof history === 'object') {
             this.location();
+        }
+    }
+
+    ignoreUncaughtExceptions() {
+        let p;
+        try {
+            // Use eval to hide process usage from Webpack and Browserify.
+            p = eval('process');
+        } catch {}
+        if (typeof p === 'object' && typeof p.on === 'function') {
+          p.removeListener('uncaughtException', this.uncaughtExceptionHandler);
+        }
+    }
+
+    ignoreUnhandledRejections() {
+        let p;
+        try {
+            // Use eval to hide process usage from Webpack and Browserify.
+            p = eval('process');
+        } catch {}
+        if (typeof p === 'object' && typeof p.on === 'function') {
+          p.removeListener('unhandledRejection', this.unhandledRejectionHandler);
         }
     }
 
