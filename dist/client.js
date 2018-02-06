@@ -1,4 +1,4 @@
-/*! airbrake-js v1.0.5 */
+/*! airbrake-js v1.0.6 */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
@@ -459,7 +459,7 @@ var Client = /** @class */ (function () {
                 severity: 'error',
                 notifier: {
                     name: 'airbrake-js',
-                    version: "1.0.5",
+                    version: "1.0.6",
                     url: 'https://github.com/airbrake/airbrake-js',
                 },
             }, err.context),
