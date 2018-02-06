@@ -42,6 +42,9 @@ export default class Historian {
         if (typeof p === 'object' && typeof p.on === 'function') {
             p.on('uncaughtException', (err) => {
                 this.notify(err);
+                if (p.listeners('uncaughtException').length === 1) {
+                    throw err;
+                }
             });
             p.on('unhandledRejection', (reason: Error, _p) => {
                 this.notify(reason);

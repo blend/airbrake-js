@@ -1,4 +1,4 @@
-/*! airbrake-js v1.0.4 */
+/*! airbrake-js v1.0.5 */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
@@ -459,7 +459,7 @@ var Client = /** @class */ (function () {
                 severity: 'error',
                 notifier: {
                     name: 'airbrake-js',
-                    version: "1.0.4",
+                    version: "1.0.5",
                     url: 'https://github.com/airbrake/airbrake-js',
                 },
             }, err.context),
@@ -915,7 +915,7 @@ var define = false;
     }
 
     function _capitalize(str) {
-        return str[0].toUpperCase() + str.substring(1);
+        return str.charAt(0).toUpperCase() + str.substring(1);
     }
 
     function _getter(p) {
@@ -1500,6 +1500,9 @@ var Historian = /** @class */ (function () {
         if (typeof p === 'object' && typeof p.on === 'function') {
             p.on('uncaughtException', function (err) {
                 _this.notify(err);
+                if (p.listeners('uncaughtException').length === 1) {
+                    throw err;
+                }
             });
             p.on('unhandledRejection', function (reason, _p) {
                 _this.notify(reason);
